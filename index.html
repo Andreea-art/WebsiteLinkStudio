@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebsiteLink Studio</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a;line-height:1.6}
+  a{text-decoration:none;color:inherit}
+  button{cursor:pointer;border:none;font-family:inherit;background:none}
+  img{max-width:100%}
+  .container{max-width:72rem;margin:0 auto;padding:0 1.5rem}
+  .text-center{text-align:center}
+  .hidden{display:none!important}
+
+  /* Navbar */
+  .navbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-bottom:1px solid #f1f5f9}
+  .navbar .container{height:4rem;display:flex;align-items:center;justify-content:space-between}
+  .logo{display:flex;align-items:center;gap:.5rem;font-weight:700;font-size:1.25rem;letter-spacing:-.025em}
+  .logo svg{width:1.5rem;height:1.5rem;color:#059669}
+  .logo span:last-child{color:#059669}
+  .nav-links{display:none;align-items:center;gap:2rem;font-size:.875rem;font-weight:500;color:#64748b}
+  .nav-links a:hover{color:#059669}
+  .nav-actions{display:flex;align-items:center;gap:.75rem}
+  .lang-switch{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;border-radius:.5rem;font-size:.875rem;font-weight:500;color:#64748b;background:#fff;border:1px solid #e2e8f0;cursor:pointer;transition:all .2s}
+  .lang-switch:hover{background:#f1f5f9;color:#059669}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.5rem 1rem;border-radius:.5rem;font-weight:600;font-size:.875rem;transition:all .2s}
+  .btn-primary{background:#059669;color:#fff}
+  .btn-primary:hover{background:#047857}
+  .btn-lg{padding:.75rem 2rem;font-size:1rem;height:3rem}
+  .btn-outline{background:transparent;border:1px solid #cbd5e1;color:#334155}
+  .btn-outline:hover{background:#f8fafc}
+  @media(min-width:768px){.nav-links{display:flex}.hidden-sm{display:inline-flex!important}}
+  @media(max-width:767px){.hidden-sm{display:none!important}}
+
+  /* Sections */
+  .section{padding:5rem 1.5rem}
+  .section-dark{background:#0f172a;color:#fff}
+  .section-light{background:#f8fafc}
+  h2{font-size:1.875rem;font-weight:700;margin-bottom:1rem}
+  @media(min-width:768px){h2{font-size:2.25rem}}
+  .section-desc{color:#64748b;font-size:1.125rem;max-width:42rem;margin:0 auto 3rem}
+
+  /* Hero */
+  .hero{padding:5rem 1.5rem 8rem}
+  .badge{display:inline-flex;align-items:center;gap:.375rem;padding:.375rem 1rem;border-radius:9999px;font-size:.875rem;font-weight:500;color:#047857;background:#ecfdf5;border:1px solid #a7f3d0;margin-bottom:1.5rem}
+  .badge svg{width:.875rem;height:.875rem}
+  h1{font-size:2.25rem;font-weight:800;letter-spacing:-.025em;line-height:1.2;margin-bottom:1.5rem}
+  h1 .highlight{color:#059669}
+  .subtitle{font-size:1.125rem;color:#64748b;max-width:42rem;margin:0 auto 2.5rem;line-height:1.75}
+  .hero-btns{display:flex;flex-direction:column;gap:1rem;justify-content:center;align-items:center}
+  .trust-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;margin-top:3rem;font-size:.875rem;color:#64748b}
+  .trust-badges span{display:flex;align-items:center;gap:.375rem}
+  .trust-badges svg{width:1rem;height:1rem;color:#059669}
+  @media(min-width:640px){h1{font-size:3.5rem}.hero-btns{flex-direction:row}}
+
+  /* Trust */
+  .trust-section{padding:3rem 1.5rem;border-top:1px solid #f1f5f9;border-bottom:1px solid #f1f5f9;background:rgba(248,250,252,.5)}
+  .trust-label{font-size:.875rem;color:#64748b;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1.5rem}
+  .trust-brands{display:flex;flex-wrap:wrap;justify-content:center;gap:2rem;opacity:.6}
+  .trust-brands span{font-weight:700;color:#334155;font-size:1.125rem}
+
+  /* Steps - exact as image 2 */
+  .steps-wrap{position:relative;padding-top:1rem}
+  .steps-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1.25rem;position:relative}
+  .steps-line{position:absolute;top:2rem;left:8%;right:8%;height:2px;background:#e2e8f0;z-index:0}
+  .step-card{position:relative;z-index:1;text-align:center}
+  .step-icon{width:4rem;height:4rem;border-radius:1rem;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;font-size:1.5rem}
+  .step-badge{font-size:.75rem;font-weight:700;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.025em}
+  .step-title{font-size:.875rem;font-weight:700;margin-bottom:.5rem;color:#0f172a}
+  .step-desc{font-size:.75rem;color:#64748b;line-height:1.5}
+  @media(max-width:1024px){.steps-grid{grid-template-columns:repeat(3,1fr);gap:2rem}.steps-line{display:none}}
+  @media(max-width:640px){.steps-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:480px){.steps-grid{grid-template-columns:1fr}}
+
+  /* Info box */
+  .info-card{max-width:48rem;margin:3rem auto 0;background:#fffbeb;border:1px solid #fcd34d;border-radius:1rem;padding:1.5rem;display:flex;gap:1rem;align-items:flex-start}
+  .info-icon{width:2.5rem;height:2.5rem;background:#fef3c7;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .info-icon svg{width:1.25rem;height:1.25rem;color:#d97706}
+  .info-title{font-weight:700;color:#92400e;margin-bottom:.25rem}
+  .info-desc{color:#b45309;font-size:.875rem;line-height:1.6}
+  @media(max-width:768px){.info-card{flex-direction:column}}
+
+  /* Packages grid */
+  .packages-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+  @media(max-width:1024px){.packages-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:640px){.packages-grid{grid-template-columns:1fr}}
+
+  .package-card{position:relative;border:2px solid #334155;border-radius:1rem;padding:2rem;background:rgba(30,41,59,.5);transition:all .3s;cursor:pointer}
+  .package-card:hover{border-color:#475569}
+  .package-card.popular{border-color:rgba(5,150,105,.5);background:#1e293b}
+  .package-card.popular:hover{border-color:#059669}
+  .package-card.selected{border-color:#059669;box-shadow:0 0 0 3px rgba(5,150,105,.2);transform:scale(1.02)}
+  .package-badge{position:absolute;top:-1rem;left:50%;transform:translateX(-50%);background:#059669;color:#fff;font-size:.75rem;font-weight:700;padding:.375rem 1rem;border-radius:9999px;text-transform:uppercase;letter-spacing:.025em;white-space:nowrap}
+  .package-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;color:#34d399;font-size:1.25rem}
+  .package-header svg{width:1.5rem;height:1.5rem}
+  .package-name{font-weight:700;font-size:1.125rem;color:#fff}
+  .package-price{font-size:2.25rem;font-weight:800;color:#fff;margin-bottom:.25rem}
+  .package-desc{color:#94a3b8;font-size:.875rem;margin-bottom:1.5rem}
+  .package-features{list-style:none;margin-bottom:1.5rem}
+  .package-features li{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.75rem;color:#cbd5e1;font-size:.875rem}
+  .package-features li svg{width:1.25rem;height:1.25rem;color:#059669;flex-shrink:0;margin-top:.125rem}
+  .package-btn{width:100%;font-weight:700;height:3rem;border-radius:.5rem;font-size:.875rem;transition:all .2s}
+
+  /* Online Store card - exact as image 1 */
+  .ecommerce-card{border:2px solid rgba(124,58,237,.5);background:linear-gradient(135deg,#1e293b,#0f172a)}
+  .ecommerce-card:hover{border-color:#7c3aed}
+  .ecommerce-card .package-badge{background:#7c3aed}
+  .ecommerce-card .package-header{color:#a78bfa}
+  .ecommerce-card .package-features li svg{color:#a78bfa}
+  .ecommerce-inner{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+  .ecommerce-left{display:flex;flex-direction:column;gap:.25rem}
+  .ecommerce-right{display:flex;flex-direction:column}
+  .ecommerce-price{font-size:3rem;font-weight:800;color:#fff;margin:.5rem 0}
+  .ecommerce-hosting{color:#94a3b8;font-size:.875rem;margin-bottom:1rem}
+  .ecommerce-footer{display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #334155}
+  .ecommerce-time{display:flex;align-items:center;gap:.5rem;color:#94a3b8;font-size:.875rem}
+  .ecommerce-time svg{width:1rem;height:1rem}
+  .btn-purple{background:#7c3aed;color:#fff;padding:.75rem 1.5rem;border-radius:.5rem;font-weight:700}
+  .btn-purple:hover{background:#6d28d9}
+  @media(max-width:768px){.ecommerce-inner{grid-template-columns:1fr}}
+
+  /* Checkout */
+  .checkout-card{max-width:32rem;margin:2.5rem auto 0;background:rgba(5,150,105,.15);border:1px solid rgba(5,150,105,.3);border-radius:1rem;padding:1.5rem;text-align:center}
+  .checkout-title{color:#6ee7b7;font-weight:500;margin-bottom:.5rem}
+  .checkout-price{font-size:1.875rem;font-weight:800;color:#fff;margin-bottom:1rem}
+  .checkout-split{background:rgba(15,23,42,.6);border-radius:.5rem;padding:.75rem;margin-bottom:1rem}
+  .checkout-row{display:flex;justify-content:space-between;font-size:.875rem;margin-bottom:.5rem}
+  .checkout-row:last-child{margin-bottom:0}
+  .checkout-label{color:#94a3b8}
+  .checkout-value{color:#6ee7b7;font-weight:700}
+  .checkout-btn{background:#059669;color:#fff;font-weight:700;padding:.75rem 2rem;border-radius:.5rem;font-size:1rem;display:inline-block}
+  .checkout-btn:hover{background:#047857}
+  .checkout-note{color:#64748b;font-size:.75rem;margin-top:.75rem}
+
+  /* Services */
+  .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:64rem;margin:0 auto}
+  @media(max-width:768px){.services-grid{grid-template-columns:1fr}}
+  .service-card{position:relative;border:2px solid;border-radius:1rem;padding:2rem;background:#fff;transition:all .3s}
+  .service-card:hover{transform:translateY(-2px)}
+  .service-card.hosting{border-color:rgba(37,99,235,.3)}
+  .service-card.hosting:hover{border-color:#2563eb}
+  .service-card.maintenance{border-color:rgba(5,150,105,.3)}
+  .service-card.maintenance:hover{border-color:#059669}
+  .service-card.hourly{border-color:#e2e8f0}
+  .service-card.hourly:hover{border-color:#94a3b8}
+  .service-badge{position:absolute;top:-1rem;left:1.5rem;font-size:.75rem;font-weight:700;padding:.375rem .75rem;border-radius:9999px;text-transform:uppercase;letter-spacing:.025em;color:#fff}
+  .service-badge.hosting{background:#2563eb}
+  .service-badge.maintenance{background:#059669}
+  .service-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+  .service-header svg{width:1.25rem;height:1.25rem}
+  .service-name{font-weight:700;font-size:1.125rem}
+  .service-price{font-size:2.25rem;font-weight:800}
+  .service-period{color:#64748b}
+  .service-desc{color:#94a3b8;font-size:.875rem;margin-bottom:1.5rem}
+  .service-features{list-style:none}
+  .service-features li{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.75rem;font-size:.875rem}
+  .service-features li svg{width:1.25rem;height:1.25rem;flex-shrink:0;margin-top:.125rem}
+
+  /* Features */
+  .features-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  @media(max-width:768px){.features-grid{grid-template-columns:1fr}}
+  .feature-item{display:flex;gap:1rem}
+  .feature-icon{width:2rem;height:2rem;background:#d1fae5;border-radius:9999px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.25rem}
+  .feature-icon svg{width:1rem;height:1rem;color:#059669}
+  .feature-title{font-weight:700;font-size:1rem}
+  .feature-desc{color:#64748b;font-size:.875rem;margin-top:.25rem}
+  .guarantee-box{background:#fff;border-radius:1.5rem;padding:2rem;box-shadow:0 20px 60px -15px rgba(0,0,0,.1);border:1px solid #e2e8f0}
+  .guarantee-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem}
+  .guarantee-icon{width:2.5rem;height:2.5rem;background:#d1fae5;border-radius:9999px;display:flex;align-items:center;justify-content:center}
+  .guarantee-icon svg{width:1.25rem;height:1.25rem;color:#059669}
+  .guarantee-row{display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid #f1f5f9}
+  .guarantee-label{color:#475569;font-size:.875rem}
+  .guarantee-badge{padding:.25rem .75rem;border-radius:.375rem;font-size:.75rem;font-weight:500;color:#047857;background:#ecfdf5;border:1px solid #a7f3d0}
+  .guarantee-quote{background:#d1fae5;border-radius:.75rem;padding:1rem;text-align:center;margin-top:1rem}
+  .guarantee-quote p{color:#047857;font-weight:600;font-size:.875rem}
+
+  /* FAQ */
+  .faq-list{max-width:48rem;margin:0 auto}
+  .faq-item{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;overflow:hidden;margin-bottom:.75rem}
+  .faq-question{width:100%;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;text-align:left;background:none;border:none;font-size:1rem;font-weight:600;color:#0f172a;transition:background .2s}
+  .faq-question:hover{background:#f8fafc}
+  .faq-question svg{width:1.25rem;height:1.25rem;color:#94a3b8;flex-shrink:0;margin-left:1rem;transition:transform .2s}
+  .faq-question.active svg{color:#059669;transform:rotate(180deg)}
+  .faq-answer{padding:0 1.5rem 1.25rem;color:#475569;font-size:.875rem;line-height:1.6;display:none}
+  .faq-answer.show{display:block;animation:fadeIn .2s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+  /* Contact */
+  .contact-card{max-width:36rem;margin:0 auto;background:#fff;border:1px solid #e2e8f0;border-radius:1rem;padding:2rem}
+  .form-group{margin-bottom:1.25rem}
+  .form-label{display:block;font-size:.875rem;font-weight:600;color:#334155;margin-bottom:.375rem}
+  .form-input{width:100%;padding:.75rem 1rem;border:1px solid #cbd5e1;border-radius:.5rem;font-size:.875rem;outline:none;transition:all .2s}
+  .form-input:focus{border-color:#059669;box-shadow:0 0 0 3px rgba(5,150,105,.2)}
+  .form-textarea{min-height:6rem;resize:vertical}
+  .form-footer{display:flex;flex-direction:column;gap:.75rem;margin-top:.75rem;font-size:.75rem;color:#64748b}
+  .form-footer span{display:flex;align-items:center;gap:.375rem}
+  .form-footer svg{width:.875rem;height:.875rem}
+  .success-state{text-align:center;padding:2rem 0}
+  .success-icon{width:4rem;height:4rem;background:#d1fae5;border-radius:9999px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+  .success-icon svg{width:2rem;height:2rem;color:#059669}
+  .success-title{font-size:1.25rem;font-weight:700;color:#047857;margin-bottom:.5rem}
+
+  /* Footer */
+  .footer{padding:3rem 1.5rem;border-top:1px solid #f1f5f9}
+  .footer-content{max-width:72rem;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:1.5rem}
+  .footer-links{display:flex;gap:1.5rem;font-size:.875rem;color:#64748b}
+  .footer-links a:hover{color:#334155}
+  .footer-copy{color:#64748b;font-size:.875rem}
+  @media(min-width:768px){.footer-content{flex-direction:row;justify-content:space-between}}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="container">
+    <a href="#" class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M2 2l7.586 7.586"/></svg>
+      <span>WebsiteLink</span><span>Studio</span>
+    </a>
+    <div class="nav-links">
+      <a href="#how">How It Works</a>
+      <a href="#packages">Packages</a>
+      <a href="#services">Services</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <button class="lang-switch" onclick="toggleLang()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span id="langLabel">Română</span>
+      </button>
+      <a href="#packages" class="btn btn-primary hidden-sm">See Pricing</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero text-center">
+  <div class="container">
+    <div class="badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span data-en="Delivery in 1–14 days depending on package" data-ro="Livrare în 1–14 zile">Delivery in 1–14 days depending on package</span>
+    </div>
+    <h1>
+      <span data-en="Your professional website," data-ro="Site-ul tău profesional,">Your professional website,</span><br>
+      <span class="highlight" data-en="ready when you need it." data-ro="gata când ai nevoie.">ready when you need it.</span>
+    </h1>
+    <p class="subtitle" data-en="No endless meetings. Pay half to start, see a preview, pay the rest when you're happy." data-ro="Fără ședințe interminabile. Plătești jumătate, revezi, plătești restul când ești mulțumit.">No endless meetings. Pay half to start, see a preview, pay the rest when you're happy.</p>
+    <div class="hero-btns">
+      <a href="#packages" class="btn btn-primary btn-lg" data-en="Choose Your Package" data-ro="Alege Pachetul">Choose Your Package</a>
+      <a href="#how" class="btn btn-outline btn-lg" data-en="How It Works" data-ro="Cum Funcționează">How It Works</a>
+    </div>
+    <div class="trust-badges">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span data-en="Pay 50% to start" data-ro="Plătești 50% la început">Pay 50% to start</span></span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span data-en="Secure payment" data-ro="Plată securizată">Secure payment</span></span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span data-en="150+ sites delivered" data-ro="150+ site-uri livrate">150+ sites delivered</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- Trust -->
+<section class="trust-section text-center">
+  <div class="container">
+    <p class="trust-label" data-en="Trusted by businesses like" data-ro="Avem încredere de la">Trusted by businesses like</p>
+    <div class="trust-brands">
+      <span>Restaurant</span><span>Medical Clinic</span><span>E-Commerce</span><span>Consultant</span><span>Tech Startup</span><span>Agency</span>
+    </div>
+  </div>
+</section>
+
+<!-- Steps -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="text-center">
+      <h2 data-en="How it works" data-ro="Cum funcționează">How it works</h2>
+      <p class="section-desc" data-en="A 6-step process. You only pay the second half after you've seen and approved the preview." data-ro="Un proces în 6 pași. Plătești a doua jumătate doar după ce-ai aprobat preview-ul.">A 6-step process. You only pay the second half after you've seen and approved the preview.</p>
+    </div>
+    <div class="steps-wrap">
+      <div class="steps-line"></div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-icon" style="background:#ecfdf5;color:#059669">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          </div>
+          <div class="step-badge" style="color:#059669">STEP 1</div>
+          <div class="step-title" data-en="Choose & Pay 50%" data-ro="Alegi & Plătești 50%">Choose & Pay 50%</div>
+          <div class="step-desc" data-en="Select your package and pay 50% upfront. No hidden fees." data-ro="Selectezi pachetul și plătești 50% avans. Fără taxe ascunse.">Select your package and pay 50% upfront. No hidden fees.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-icon" style="background:#f1f5f9;color:#64748b">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+          </div>
+          <div class="step-badge" style="color:#64748b">STEP 2</div>
+          <div class="step-title" data-en="Send Brief" data-ro="Trimite Brief">Send Brief</div>
+          <div class="step-desc" data-en="Fill a 5-minute form. Mention your domain or let us help you buy one." data-ro="Completezi un formular de 5 minute. Menționezi domeniul sau te ajutăm să cumperi unul.">Fill a 5-minute form. Mention your domain or let us help you buy one.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-icon" style="background:#fef3c7;color:#d97706">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="step-badge" style="color:#d97706">STEP 3</div>
+          <div class="step-title" data-en="Live Preview" data-ro="Preview Live">Live Preview</div>
+          <div class="step-desc" data-en="We build your site and send a private preview. Review every detail." data-ro="Construim site-ul și trimitem un preview privat. Îl revezi în detaliu.">We build your site and send a private preview. Review every detail.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-icon" style="background:#f1f5f9;color:#64748b">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+          </div>
+          <div class="step-badge" style="color:#64748b">STEP 4</div>
+          <div class="step-title" data-en="Refine & Adjust" data-ro="Ajustăm & Rafinăm">Refine & Adjust</div>
+          <div class="step-desc" data-en="We fine-tune based on your feedback. 2 full revision rounds included." data-ro="Finisăm pe baza feedback-ului tău. 2 runde complete de modificări incluse.">We fine-tune based on your feedback. 2 full revision rounds included.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-icon" style="background:#dbeafe;color:#2563eb">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="step-badge" style="color:#2563eb">STEP 5</div>
+          <div class="step-title" data-en="Pay 50% Balance" data-ro="Plătești Restul 50%">Pay 50% Balance</div>
+          <div class="step-desc" data-en="Happy with the preview? Pay the remaining 50% to proceed." data-ro="Mulțumit de preview? Plătești restul de 50% ca să mergem mai departe.">Happy with the preview? Pay the remaining 50% to proceed.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-icon" style="background:#ecfdf5;color:#059669">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+          </div>
+          <div class="step-badge" style="color:#059669">STEP 6</div>
+          <div class="step-title" data-en="Go Live" data-ro="Go Live">Go Live</div>
+          <div class="step-desc" data-en="We launch your site on your domain. Live in minutes." data-ro="Lansăm site-ul pe domeniul tău. Live în câteva minute.">We launch your site on your domain. Live in minutes.</div>
+        </div>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div>
+        <div class="info-title" data-en="Satisfaction-first approach" data-ro="Abordare orientată pe satisfacție">Satisfaction-first approach</div>
+        <div class="info-desc" data-en="We focus on getting your website exactly right before it goes live. That's why you pay only 50% upfront — the remaining 50% is due only after you've reviewed the preview and requested any changes. Because each site is custom-built, we don't offer cash refunds. Instead, we include 2 full revision rounds and work closely with you to make sure you're fully satisfied before launch." data-ro="Ne concentrăm să-ți facem site-ul exact așa cum trebuie înainte de lansare. De aceea plătești doar 50% la început — restul de 50% e datorat doar după ce-ai revizuit preview-ul și cerut orice modificări. Pentru că fiecare site e construit custom, nu oferim refund cash. În schimb, includem 2 runde complete de modificări și lucrăm îndeaproape cu tine ca să fii pe deplin mulțumit înainte de lansare.">We focus on getting your website exactly right before it goes live. That's why you pay only 50% upfront — the remaining 50% is due only after you've reviewed the preview and requested any changes. Because each site is custom-built, we don't offer cash refunds. Instead, we include 2 full revision rounds and work closely with you to make sure you're fully satisfied before launch.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Packages -->
+<section class="section section-dark" id="packages">
+  <div class="container">
+    <div class="text-center">
+      <h2 data-en="Choose your package" data-ro="Alege pachetul">Choose your package</h2>
+      <p class="section-desc" style="color:#94a3b8" data-en="Fixed, transparent pricing. No hidden costs." data-ro="Prețuri fixe, transparente. Fără costuri ascunse.">Fixed, transparent pricing. No hidden costs.</p>
+    </div>
+    <div class="packages-grid">
+      <!-- Starter -->
+      <div class="package-card" onclick="selectPackage('starter')" id="card-starter">
+        <div class="package-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span class="package-name">Starter</span>
+        </div>
+        <div class="package-price">€499</div>
+        <p class="package-desc" data-en="Ready in 1–2 days" data-ro="Gata în 1–2 zile">Ready in 1–2 days</p>
+        <ul class="package-features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>1 page (Landing Page)</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Responsive design</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Mobile optimised</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Contact form</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Hosting included — you only buy the domain</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>2 revision rounds included</span></li>
+        </ul>
+        <button class="package-btn btn-primary" onclick="event.stopPropagation();selectPackage('starter')">Select Package</button>
+      </div>
+      <!-- Business -->
+      <div class="package-card popular" onclick="selectPackage('business')" id="card-business">
+        <div class="package-badge" data-en="Best Seller" data-ro="Cel mai vândut">Best Seller</div>
+        <div class="package-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span class="package-name">Business</span>
+        </div>
+        <div class="package-price">€999</div>
+        <p class="package-desc" data-en="Ready in 3–5 days" data-ro="Gata în 3–5 zile">Ready in 3–5 days</p>
+        <ul class="package-features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Up to 5 pages</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Custom UI/UX design</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Basic SEO</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Integrated blog</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Gallery / Portfolio</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>WhatsApp integration</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Analytics setup</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>2 revision rounds included</span></li>
+        </ul>
+        <button class="package-btn btn-primary" onclick="event.stopPropagation();selectPackage('business')">Select Package</button>
+      </div>
+      <!-- Premium -->
+      <div class="package-card" onclick="selectPackage('premium')" id="card-premium">
+        <div class="package-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+          <span class="package-name">Premium</span>
+        </div>
+        <div class="package-price">€1,999</div>
+        <p class="package-desc" data-en="Ready in 5–7 days" data-ro="Gata în 5–7 zile">Ready in 5–7 days</p>
+        <ul class="package-features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Up to 10 pages</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Premium custom design</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Advanced SEO</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Booking system</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Online payment integration</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Admin CMS dashboard</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Multi-language</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Unlimited revisions 30 days</span></li>
+        </ul>
+        <button class="package-btn" style="background:#334155;color:#fff" onclick="event.stopPropagation();selectPackage('premium')">Select Package</button>
+      </div>
+    </div>
+
+    <!-- Online Store - exact as image 1 -->
+    <div style="margin-top:2rem;max-width:48rem;margin-left:auto;margin-right:auto">
+      <div class="package-card ecommerce-card" onclick="selectPackage('ecommerce')" id="card-ecommerce">
+        <div class="package-badge" style="background:#7c3aed" data-en="MOST PROFITABLE" data-ro="CEL MAI PROFITABIL">MOST PROFITABLE</div>
+        <div class="ecommerce-inner">
+          <div class="ecommerce-left">
+            <div class="package-header" style="color:#a78bfa;margin-bottom:.5rem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              <span class="package-name">Online Store</span>
+            </div>
+            <p style="color:#94a3b8;font-size:.875rem;margin-bottom:.5rem" data-en="Ready in 7–14 days" data-ro="Gata în 7–14 zile">Ready in 7–14 days</p>
+            <div class="ecommerce-price">€2,999</div>
+            <p class="ecommerce-hosting" data-en="Hosting €350/year (performance &amp; security)" data-ro="Hosting €350/an (performanță &amp; securitate)">Hosting €350/year (performance &amp; security)</p>
+          </div>
+          <div class="ecommerce-right">
+            <ul class="package-features">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Up to 20 pages</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Up to 100 products added</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Product categories &amp; filters</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Shopping cart &amp; checkout</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Stripe / PayPal payments</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Customer accounts &amp; orders</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Inventory management</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="ecommerce-footer">
+          <div class="ecommerce-time">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span data-en="Ready in 7–14 days" data-ro="Gata în 7–14 zile">Ready in 7–14 days</span>
+          </div>
+          <button class="btn-purple" onclick="event.stopPropagation();selectPackage('ecommerce')">Select Package</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checkout -->
+    <div id="checkoutBox" style="display:none">
+      <div class="checkout-card">
+        <div class="checkout-title" id="checkoutTitle">You selected Business</div>
+        <div class="checkout-price" id="checkoutPrice">€999</div>
+        <div class="checkout-split">
+          <div class="checkout-row"><span class="checkout-label">Now (50% deposit)</span><span class="checkout-value" id="depositAmount">€500</span></div>
+          <div class="checkout-row"><span class="checkout-label">After preview approval (50%)</span><span class="checkout-value" id="balanceAmount">€499</span></div>
+        </div>
+        <button class="checkout-btn" id="checkoutBtn" onclick="alert('Redirect to payment page')">Pay 50% Deposit</button>
+        <p class="checkout-note">Secure payment. VAT invoice included.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services -->
+<section class="section section-light" id="services">
+  <div class="container">
+    <div class="text-center">
+      <h2 data-en="Ongoing support" data-ro="Suport continuu">Ongoing support</h2>
+      <p class="section-desc" data-en="Transparent, predictable pricing so you never worry about hosting, updates, or downtime." data-ro="Prețuri transparente și predictibile, ca să nu-ți faci griji niciodată.">Transparent, predictable pricing so you never worry about hosting, updates, or downtime.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card hosting">
+        <div class="service-badge hosting">1st Year Free</div>
+        <div class="service-header" style="color:#2563eb">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          <span class="service-name">Hosting</span>
+        </div>
+        <div><span class="service-price">€200</span><span class="service-period">/year</span></div>
+        <p class="service-desc">First year free with any package</p>
+        <ul class="service-features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#2563eb"><polyline points="20 6 9 17 4 12"/></svg><span>Fast, reliable servers</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#2563eb"><polyline points="20 6 9 17 4 12"/></svg><span>SSL certificate included</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#2563eb"><polyline points="20 6 9 17 4 12"/></svg><span>Daily backups</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#2563eb"><polyline points="20 6 9 17 4 12"/></svg><span>99.9% uptime guarantee</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#2563eb"><polyline points="20 6 9 17 4 12"/></svg><span>From year 2: €200/year</span></li>
+        </ul>
+      </div>
+      <div class="service-card maintenance">
+        <div class="service-badge maintenance">Recommended</div>
+        <div class="service-header" style="color:#059669">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          <span class="service-name">Monthly Maintenance</span>
+        </div>
+        <div><span class="service-price">€50</span><span class="service-period">/month</span></div>
+        <p class="service-desc">No long-term commitment</p>
+        <ul class="service-features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#059669"><polyline points="20 6 9 17 4 12"/></svg><span>Everything in Hosting, plus:</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#059669"><polyline points="20 6 9 17 4 12"/></svg><span>Security & plugin updates</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#059669"><polyline points="20 6 9 17 4 12"/></svg><span>Priority email support</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#059669"><polyline points="20 6 9 17 4 12"/></svg><span>Small content changes</span></li>
+        </ul>
+      </div>
+      <div class="service-card hourly">
+        <div class="service-header" style="color:#64748b">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          <span class="service-name">Technical Intervention</span>
+        </div>
+        <div><span class="service-price">€30</span><span class="service-period">/hour</span></div>
+        <p class="service-desc">Billed in 30-minute blocks</p>
+        <ul class="service-features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#64748b"><polyline points="20 6 9 17 4 12"/></svg><span>New features or pages</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#64748b"><polyline points="20 6 9 17 4 12"/></svg><span>Design changes</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#64748b"><polyline points="20 6 9 17 4 12"/></svg><span>Bug fixes</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#64748b"><polyline points="20 6 9 17 4 12"/></svg><span>SEO improvements</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section">
+  <div class="container">
+    <div class="features-grid">
+      <div>
+        <h2 data-en="What you get in every package" data-ro="Ce primești în fiecare pachet">What you get in every package</h2>
+        <p class="section-desc" style="max-width:none;margin-left:0" data-en="We don't just sell code. We sell a complete, ready-to-use solution." data-ro="Nu vindem doar cod. Vindem o soluție completă, gata de folosit.">We don't just sell code. We sell a complete, ready-to-use solution.</p>
+        <div style="margin-top:2rem;display:flex;flex-direction:column;gap:1.5rem">
+          <div class="feature-item">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div>
+              <div class="feature-title">Professional design, not templates</div>
+              <div class="feature-desc">Every site is designed from scratch based on your brief.</div>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div>
+              <div class="feature-title">Clean, fast, SEO-friendly code</div>
+              <div class="feature-desc">Modern technology, optimised for Google PageSpeed.</div>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div>
+              <div class="feature-title">Mobile-first experience</div>
+              <div class="feature-desc">60% of traffic comes from mobile. Your site looks flawless everywhere.</div>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div>
+              <div class="feature-title">Satisfaction-first delivery</div>
+              <div class="feature-desc">Pay 50% to start. Preview first. Pay rest only when happy.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#f1f5f9;border-radius:1.5rem;padding:2rem">
+        <div class="guarantee-box">
+          <div class="guarantee-header">
+            <div class="guarantee-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div><div style="font-weight:700">Risk-free delivery</div><div style="font-size:.75rem;color:#64748b">Satisfaction-first process</div></div>
+          </div>
+          <div class="guarantee-row"><span class="guarantee-label">Pay only 50% upfront</span><span class="guarantee-badge">To start</span></div>
+          <div class="guarantee-row"><span class="guarantee-label">Private preview before launch</span><span class="guarantee-badge">Always</span></div>
+          <div class="guarantee-row"><span class="guarantee-label">Revision rounds</span><span class="guarantee-badge">2 included</span></div>
+          <div class="guarantee-row" style="border-bottom:none"><span class="guarantee-label">Pay remaining 50%</span><span class="guarantee-badge">After approval</span></div>
+          <div class="guarantee-quote"><p>"Pay 50% to start. We build, you preview, we refine. Only when you're 100% satisfied do you pay the remaining 50% and we go live."</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-light" id="faq">
+  <div class="container">
+    <div class="text-center">
+      <h2 data-en="Frequently asked questions" data-ro="Întrebări frecvente">Frequently asked questions</h2>
+      <p class="section-desc" data-en="Everything you need to know before buying." data-ro="Tot ce trebuie să știi înainte să cumperi.">Everything you need to know before buying.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-en="How does the 50/50 payment work?" data-ro="Cum funcționează plata 50/50?">How does the 50/50 payment work?</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer">You pay 50% upfront to get started. We build your site, send a private preview with 2 revision rounds. Once you're satisfied, you pay the remaining 50% and we go live.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-en="What if I don't like the preview?" data-ro="Ce se întâmplă dacă nu îmi place preview-ul?">What if I don't like the preview?</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer">You get 2 full revision rounds to adjust everything. In 5+ years and 150+ projects, no client has walked away unhappy. The 50% deposit covers custom work and is non-refundable, but we offer credit for a future project if needed.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-en="Why don't you offer cash refunds?" data-ro="De ce nu oferiți refund cash?">Why don't you offer cash refunds?</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer">Each website is custom-built from scratch — not an off-the-shelf product. Our 50/50 model eliminates risk: you pay half, see the preview, request changes, and only pay the rest when satisfied. This delivers better results for both sides.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-en="Why is Online Store hosting €350/year?" data-ro="De ce hostingul Magazin Online e €350/an?">Why is Online Store hosting €350/year?</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer">Online stores need significantly more resources due to higher performance and security requirements: SSL encryption for payments, higher bandwidth for traffic surges, PCI-compliant security, daily backups, and faster servers. €350/year includes all of this — no separate hosting bills.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="text-center">
+      <h2 data-en="Got questions? We're here." data-ro="Ai întrebări? Scrie-ne.">Got questions? We're here.</h2>
+      <p class="section-desc" data-en="Not sure which package fits? Send us a message and we'll reply within 24 hours." data-ro="Nu ești sigur ce pachet ți se potrivește? Trimite-ne un mesaj și răspundem în 24h.">Not sure which package fits? Send us a message and we'll reply within 24 hours.</p>
+    </div>
+    <div class="contact-card">
+      <div id="contactForm">
+        <div class="form-group"><label class="form-label">Your name</label><input type="text" class="form-input" id="contactName" placeholder="John Smith"></div>
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="contactEmail" placeholder="john@company.ie"></div>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-input form-textarea" id="contactMessage" placeholder="Hi, I have a question about..."></textarea></div>
+        <button class="btn btn-primary btn-lg" style="width:100%" onclick="sendMessage()">Send Message</button>
+        <div class="form-footer">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Your data is safe. We don't share or spam.</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Or email us at <a href="mailto:hello@websitefactory.ie" style="color:#059669">hello@websitefactory.ie</a></span>
+        </div>
+      </div>
+      <div id="contactSuccess" class="success-state hidden">
+        <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="success-title">Message sent! We'll reply within 24h.</div>
+        <button class="btn btn-outline" onclick="resetForm()">Send another message</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section text-center">
+  <div class="container">
+    <h2 style="font-size:2.25rem">Ready to get your site <span class="highlight">in 24h?</span></h2>
+    <p class="subtitle">Stop delaying. Every day without a professional website is a day you're losing customers.</p>
+    <a href="#packages" class="btn btn-primary btn-lg" style="font-size:1.125rem;padding:.875rem 2.5rem;height:auto">Choose Your Package Now</a>
+    <p style="color:#94a3b8;font-size:.875rem;margin-top:1rem">50% now • 50% after preview approval • Private preview • 2 revision rounds</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <div style="display:flex;align-items:center;gap:.5rem;font-weight:700">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8Z"/></svg>
+      <span>Website</span><span style="color:#059669">Factory</span>
+    </div>
+    <div class="footer-copy">© <span id="year"></span> Website Factory. All rights reserved.</div>
+    <div class="footer-links">
+      <a href="#">Terms & Conditions</a>
+      <a href="#">Refund Policy</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Language toggle
+let currentLang='en';
+function toggleLang(){
+  currentLang=currentLang==='en'?'ro':'en';
+  document.getElementById('langLabel').textContent=currentLang==='en'?'Română':'English';
+  document.querySelectorAll('[data-en]').forEach(el=>{
+    const text=currentLang==='en'?el.getAttribute('data-en'):el.getAttribute('data-ro');
+    if(el.childNodes.length===1&&el.childNodes[0].nodeType===3) el.textContent=text;
+    else{
+      const tn=Array.from(el.childNodes).find(n=>n.nodeType===3&&n.textContent.trim());
+      if(tn) tn.textContent=text;
+    }
+  });
+}
+
+// Package selection
+let selectedPackage=null;
+const prices={starter:499,business:999,premium:1999,ecommerce:2999};
+function selectPackage(id){
+  selectedPackage=id;
+  document.querySelectorAll('.package-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('card-'+id).classList.add('selected');
+  const price=prices[id],half=Math.ceil(price/2),other=price-half;
+  const names={starter:'Starter',business:'Business',premium:'Premium',ecommerce:'Online Store'};
+  document.getElementById('checkoutTitle').textContent='You selected '+names[id];
+  document.getElementById('checkoutPrice').textContent='€'+price;
+  document.getElementById('depositAmount').textContent='€'+half;
+  document.getElementById('balanceAmount').textContent='€'+other;
+  const box=document.getElementById('checkoutBox');
+  box.style.display='block';
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+// FAQ
+function toggleFaq(btn){
+  const ans=btn.nextElementSibling;
+  const open=ans.classList.contains('show');
+  document.querySelectorAll('.faq-answer').forEach(a=>a.classList.remove('show'));
+  document.querySelectorAll('.faq-question').forEach(q=>q.classList.remove('active'));
+  if(!open){ans.classList.add('show');btn.classList.add('active');}
+}
+
+// Contact
+function sendMessage(){
+  const n=document.getElementById('contactName').value;
+  const e=document.getElementById('contactEmail').value;
+  const m=document.getElementById('contactMessage').value;
+  if(!n||!e||!m){alert('Please fill all fields');return;}
+  document.getElementById('contactForm').classList.add('hidden');
+  document.getElementById('contactSuccess').classList.remove('hidden');
+}
+function resetForm(){
+  document.getElementById('contactName').value='';
+  document.getElementById('contactEmail').value='';
+  document.getElementById('contactMessage').value='';
+  document.getElementById('contactForm').classList.remove('hidden');
+  document.getElementById('contactSuccess').classList.add('hidden');
+}
+
+// Year
+document.getElementById('year').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>
