@@ -485,16 +485,22 @@ function prevStep() { showStep(currentStep - 1); }
 function validateStep(step) {
   let valid = true;
   const fields = requiredFields[step] || [];
+  
+  // Helper: f_name → e_name, goal → e_goal
+  function errId(fieldId) {
+    return 'e_' + (fieldId.startsWith('f_') ? fieldId.substring(2) : fieldId);
+  }
+  
   fields.forEach(id => {
     if (id === 'f_industry' || id === 'f_package') {
       const el = document.getElementById(id);
-      const err = document.getElementById('e_' + id);
+      const err = document.getElementById(errId(id));
       if (!el.value) { el.classList.add('field-error'); err.classList.add('show'); valid = false; }
       else { el.classList.remove('field-error'); err.classList.remove('show'); }
     }
     else if (id === 'f_name' || id === 'f_email' || id === 'f_company' || id === 'f_description') {
       const el = document.getElementById(id);
-      const err = document.getElementById('e_' + id);
+      const err = document.getElementById(errId(id));
       let ok = el.value.trim() !== '';
       if (id === 'f_email') ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
       if (!ok) { el.classList.add('field-error'); err.classList.add('show'); valid = false; }
@@ -502,13 +508,13 @@ function validateStep(step) {
     }
     else if (id === 'goal' || id === 'logo' || id === 'copy' || id === 'images' || id === 'domain' || id === 'timeline') {
       const checked = document.querySelector('input[name="'+id+'"]:checked');
-      const err = document.getElementById('e_' + id);
+      const err = document.getElementById(errId(id));
       if (!checked) { err.classList.add('show'); valid = false; }
       else { err.classList.remove('show'); }
     }
     else if (id === 'pages') {
       const checked = document.querySelectorAll('input[name="'+id+'"]:checked').length > 0;
-      const err = document.getElementById('e_' + id);
+      const err = document.getElementById(errId(id));
       if (!checked) { err.classList.add('show'); valid = false; }
       else { err.classList.remove('show'); }
     }
@@ -521,7 +527,7 @@ function setupLiveValidation() {
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', () => {
       el.classList.remove('field-error');
-      const err = document.getElementById('e_' + id);
+      const err = document.getElementById('e_' + id.substring(2));
       if (err) err.classList.remove('show');
     });
   });
@@ -529,9 +535,14 @@ function setupLiveValidation() {
 setupLiveValidation();
 
 function selectRadio(el, name) {
+  // Debifează toate radio-urile din grup
   document.querySelectorAll('input[name="'+name+'"]').forEach(inp => {
+    inp.checked = false;
     inp.closest('.radio-item').classList.remove('selected');
   });
+  // Bifează cel pe care s-a dat click
+  const radio = el.querySelector('input[type="radio"]');
+  if (radio) radio.checked = true;
   el.classList.add('selected');
   const err = document.getElementById('e_' + name);
   if (err) err.classList.remove('show');
@@ -593,7 +604,7 @@ function submitBrief() {
     style: getRadioValue('style'),
     refs: document.getElementById('f_refs').value,
     copy: getRadioValue('copy'),
-    images: getCheckboxValues('images'),
+    images: getRadioValue('images'),
     existing: document.getElementById('f_existing').value,
     domain: getRadioValue('domain'),
     domainName: document.getElementById('f_domainname').value,
